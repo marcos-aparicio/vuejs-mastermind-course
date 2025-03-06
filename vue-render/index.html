@@ -3,13 +3,6 @@
 <script>
   const { h, createApp } = Vue;
   const Counter = {
-    template: `
-        <div>
-          Count is {{ count}}
-          <button v-on:click="increment">Increment</button>
-          <button v-on:click="decrement">Decrement</button>
-        </div>
-      `,
     data() {
       return {
         count: 5,
@@ -22,6 +15,13 @@
       decrement() {
         this.count--;
       },
+    },
+    render(component) {
+      return h("div", {}, [
+        `Count is : ${component.count} `,
+        h("button", { onClick: component.increment }, [`Increment`]),
+        h("button", { onClick: component.decrement }, [`Decrement`]),
+      ]);
     },
   };
   const app = createApp(Counter).mount("#app");
