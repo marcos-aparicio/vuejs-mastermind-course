@@ -17,17 +17,19 @@
   <main class="flex flex-col my-4 w-swv p-4">
     <section class="bg-base-200 p-4 rounded w-full">
       <form action="" class="flex gap-4">
-        <input type="text" placeholder="Todo Title" class="input flex-1" />
+        <input v-model="todoTitle" type="text" placeholder="Todo Title" class="input flex-1" />
         <div>
-          <button class="btn btn-primary btn-sm">Add Todo</button>
+          <button class="btn btn-primary btn-sm" @click.prevent="addTodo">Add Todo</button>
         </div>
       </form>
     </section>
-    <section class="p-4 bg-base-200 m-2">
-      <div class="bg-primary rounded p-2 flex">
-        <p class="flex-1">Pasear al perro</p>
+    <section class="p-4 bg-base-200 m-2 flex flex-col gap-2">
+      <div class="bg-primary rounded p-2 flex" v-for="todo in todos" v-bind:key="todo.index">
+        <p class="flex-1">{{ todo.title }}</p>
         <div>
-          <button class="btn btn-xs btn-danger btn-error btn-circle !text-xl">&times;</button>
+          <button class="btn btn-xs btn-danger btn-error btn-circle !text-xl" @click="()=>removeTodo(todo.index)">
+            &times;
+          </button>
         </div>
       </div>
     </section>
@@ -35,8 +37,24 @@
 </template>
 <script>
   export default {
-
+    data() {
+      return {
+        lastIndex: 0,
+        todoTitle: "",
+        todos: [],
+      }
+    },
+    methods: {
+      addTodo(e) {
+        e.preventDefault();
+        this.todos.push({
+          title: this.todoTitle,
+          index: this.lastIndex++
+        });
+      },
+      removeTodo(index) {
+        this.todos = this.todos.filter((todo) => todo.index !== index);
+      }
+    }
   }
 </script>
-
-<style scoped></style>
