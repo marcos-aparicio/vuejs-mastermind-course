@@ -6,14 +6,17 @@
   <div v-if="show" role="alert"
     :class="['absolute bottom-0 right-0 alert alert-soft m-2 flex justify-between', `alert-${type}`]">
     <span class="text-lg">{{ message ?? 'Topuria' }}</span>
-    <button class="btn btn-xs btn-ghost btn-circle !text-xl" @click="closeAlert">
+    <Btn class="btn btn-xs btn-ghost btn-circle !text-xl" @click="closeAlert">
       &times;
-    </button>
+    </Btn>
   </div>
 </template>
 
 <script>
+import Btn from './Btn.vue';
+
 export default {
+  components: { Btn },
   props: {
     message: {
       required: true,
