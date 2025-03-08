@@ -14,6 +14,9 @@ import Btn from '@/components/Btn.vue';
 import Pencil from '../icons/Pencil.vue';
 
 export default {
+  created() {
+    this.todo.index = this.todo.id;
+  },
   components: { Btn, Pencil },
   props: {
     todo: {
@@ -22,7 +25,7 @@ export default {
         required: true,
       },
       index: {
-        type: Number,
+        type: String,
         required: true
       }
     }

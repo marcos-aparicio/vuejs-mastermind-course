@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <main class="flex flex-col my-4 w-swv p-4 gap-2">
-    <Alert v-bind:show="showAlert" @close="showAlert = false" message="Please fill the input text" />
+    <Alert :message="alertMessage" @close="alertMessage = ''" />
     <section class="bg-base-200 p-4 rounded w-full">
       <AddTodo @submit="addTodo" />
     </section>
@@ -40,13 +40,14 @@ import Alert from "@/components/Alert.vue";
 import AddTodo from "@/components/todos/AddTodo.vue";
 import Modal from "@/components/Modal.vue";
 import Btn from "@/components/Btn.vue";
+import { api as todoApi } from "./apis/todos";
 
 export default {
   components: { Navbar, Todo, AddTodo, Alert, Modal, Btn },
   data() {
     return {
       todos: [],
-      showAlert: false,
+      alertMessage: "",
       lastIndex: 0,
       showEditModal: false,
       editTodoForm: {
@@ -58,36 +59,51 @@ export default {
       }
     }
   },
+  created() {
+    todoApi.getTodos()
+      .then(todos => this.todos = todos)
+      .catch((e) => {
+        this.alertMessage = "Error communicating with the server";
+      });
+  },
   methods: {
     openEditForm(todo) {
       this.editTodoForm.open = true;
       this.editTodoForm.todo = { ...todo }
 
     },
-    updateTodo() {
+    async updateTodo() {
       if (this.editTodoForm.index === -1) return;
       // trying to be immutable
-      const todoToUpdate = this.todos.find(todo => todo.index === this.editTodoForm.index);
+      const todoToUpdate = this.todos.find(todo => {
+        return todo.index === this.editTodoForm.todo.index
+      });
 
       if (!todoToUpdate) return;
+      todoToUpdate.title = this.editTodoForm.todo.title;
+      const updatedTodo = await todoApi.updateTodo(todoToUpdate);
+      if (!updatedTodo) return;
       todoToUpdate.title = this.editTodoForm.todo.title;
       this.editTodoForm.open = false;
 
     },
-    removeTodo(index) {
+    async removeTodo(index) {
+      const removedTodo = await todoApi.deleteTodo(index);
+      if (!removedTodo) return;
       this.todos = this.todos.filter((todo) => todo.index !== index);
     },
-    addTodo(title) {
-      console.log('ahora que xhuxha');
+    async addTodo(title) {
       if (title === "") {
-        this.showAlert = true;
+        this.alertMessage = "Please fill in the title."
         return;
       }
 
-      this.showAlert = false;
+      this.alertMessage = "";
+      const newTodo = await todoApi.addTodo({ title });
+
       this.todos.push({
         title,
-        index: this.lastIndex++,
+        index: newTodo.id
       });
     },
   },
