@@ -1,10 +1,10 @@
 <template>
   <p class="flex-1">{{ todo.title }}</p>
   <div class="flex gap-2">
-    <Btn class="btn btn-xs btn-info btn-circle !text-md p-1">
+    <Btn class="btn btn-xs btn-info btn-circle !text-md p-1" @click="$emit('edit', todo)">
       <Pencil />
     </Btn>
-    <Btn class="btn btn-xs btn-error btn-circle !text-xl" @click="$emit('delete-click', todo.index)">
+    <Btn class="btn btn-xs btn-error btn-circle !text-xl" @click="$emit('delete', todo.index)">
       &times;
     </Btn>
   </div>
@@ -27,7 +27,7 @@ export default {
       }
     }
   },
-  emits: ['delete-click']
+  emits: ['delete', 'edit']
 
 }
 </script>
