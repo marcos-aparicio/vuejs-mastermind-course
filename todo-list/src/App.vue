@@ -10,7 +10,7 @@
         <Todo v-bind:key="todo.index" :todo="todo" @delete="removeTodo" @edit="openEditForm" />
       </div>
     </section>
-    <Modal id="editTodoForm" :open="editTodoForm.open">
+    <Modal id="editTodoForm" :open="editTodoForm.open" @close="editTodoForm.open = false">
       <template v-slot:header>
         <h3>Edit Todo</h3>
       </template>
