@@ -5,9 +5,12 @@
     <section class="bg-base-200 p-4 rounded w-full">
       <AddTodo @submit="addTodo" />
     </section>
-    <section class="p-4 bg-base-200 m-2 flex flex-col gap-2" v-if="todos.length">
-      <div class="bg-primary rounded p-2 flex" v-for="todo in todos" v-bind:key="todo.index">
-        <Todo v-bind:key="todo.index" :todo="todo" @delete="removeTodo" @edit="openEditForm" />
+    <section class="p-4 bg-base-200 m-2 flex flex-col gap-2">
+      <span class="loading loading-spinner loading-xl mx-auto text-primary" v-if="isLoading"></span>
+      <div v-else="!isLoading" class="flex flex-col gap-2">
+        <div class="bg-primary rounded p-2 flex" v-for="todo in todos" v-bind:key="todo.index">
+          <Todo v-bind:key="todo.index" :todo="todo" @delete="removeTodo" @edit="openEditForm" />
+        </div>
       </div>
     </section>
     <Modal id="editTodoForm" :open="editTodoForm.open" @close="editTodoForm.open = false">
@@ -48,6 +51,7 @@ export default {
     return {
       todos: [],
       alertMessage: "",
+      isLoading: false,
       lastIndex: 0,
       showEditModal: false,
       editTodoForm: {
@@ -59,12 +63,20 @@ export default {
       }
     }
   },
-  created() {
-    todoApi.getTodos()
-      .then(todos => this.todos = todos)
-      .catch((e) => {
-        this.alertMessage = "Error communicating with the server";
-      });
+  async created() {
+    this.isLoading = true;
+    setTimeout(() => {
+      todoApi.getTodos()
+        .then(todos => {
+          this.todos = todos;
+          this.isLoading = false;
+        })
+        .catch((e) => {
+          console.log(e);
+          this.alertMessage = "Error communicating with the server";
+          this.isLoading = false;
+        });
+    }, 4000);
   },
   methods: {
     openEditForm(todo) {

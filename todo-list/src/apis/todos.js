@@ -1,4 +1,4 @@
-const URL = "http://localhost:8080";
+const URL = "/api";
 const api = {
   async addTodo(todo) {
     const req = await fetch(`${URL}/todos`, {
