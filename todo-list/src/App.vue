@@ -13,26 +13,8 @@
         </div>
       </div>
     </section>
-    <Modal id="editTodoForm" :open="editTodoForm.open" @close="editTodoForm.open = false">
-      <template v-slot:header>
-        <h3>Edit Todo</h3>
-      </template>
-      <template #body>
-        <div class="flex w-full flex-col">
-          <label class="input w-full">
-            <span class="label">Title: </span>
-            <input type="text" placeholder="Your task" v-model="editTodoForm.todo.title" />
-          </label>
-        </div>
-      </template>
-      <template #footer>
-
-        <div class="flex gap-2 justify-end">
-          <Btn class="btn btn-error btn-sm" @click="editTodoForm.open = false">Close</Btn>
-          <Btn class="btn btn-info btn-sm" @click="updateTodo">Edit</Btn>
-        </div>
-      </template>
-    </Modal>
+    <EditTodoForm :show="editTodoForm.open" @close="editTodoForm.open = false" @submit="updateTodo"
+      v-model="editTodoForm.todo.title" />
   </main>
 </template>
 <script>
@@ -43,10 +25,11 @@ import Alert from "@/components/Alert.vue";
 import AddTodo from "@/components/todos/AddTodo.vue";
 import Modal from "@/components/Modal.vue";
 import Btn from "@/components/Btn.vue";
+import EditTodoForm from "@/components/EditTodoForm.vue";
 import { api as todoApi } from "./apis/todos";
 
 export default {
-  components: { Navbar, Todo, AddTodo, Alert, Modal, Btn },
+  components: { Navbar, Todo, AddTodo, Alert, Modal, Btn, EditTodoForm },
   data() {
     return {
       todos: [],
