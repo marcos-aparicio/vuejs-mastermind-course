@@ -1,0 +1,26 @@
+<script src="https://unpkg.com/vue@3"></script>
+<div id="app"></div>
+<script>
+  const { h, createApp, ref } = Vue;
+  const Counter = {
+    setup() {
+      let count = ref(5);
+      const increment = () => count.value++;
+      const decrement = () => count.value--;
+
+      return {
+        count,
+        increment,
+        decrement,
+      };
+    },
+    render(component) {
+      return h("div", {}, [
+        `Count is : ${component.count} `,
+        h("button", { onClick: component.increment }, [`Increment`]),
+        h("button", { onClick: component.decrement }, [`Decrement`]),
+      ]);
+    },
+  };
+  const app = createApp(Counter).mount("#app");
+</script>
