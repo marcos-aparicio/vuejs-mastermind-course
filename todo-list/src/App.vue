@@ -17,90 +17,80 @@
       v-model="editTodoForm.todo.title" />
   </main>
 </template>
-<script>
 
+<script setup>
 import Navbar from "@/components/Navbar.vue";
 import Todo from "@/components/todos/Todo.vue"
 import Alert from "@/components/Alert.vue";
 import AddTodo from "@/components/todos/AddTodo.vue";
-import Modal from "@/components/Modal.vue";
-import Btn from "@/components/Btn.vue";
 import EditTodoForm from "@/components/EditTodoForm.vue";
 import { api as todoApi } from "./apis/todos";
+import { reactive, ref } from "vue";
 
-export default {
-  components: { Navbar, Todo, AddTodo, Alert, Modal, Btn, EditTodoForm },
-  data() {
-    return {
-      todos: [],
-      alertMessage: "",
-      isLoading: false,
-      lastIndex: 0,
-      showEditModal: false,
-      editTodoForm: {
-        open: false,
-        todo: {
-          id: -1,
-          title: ""
-        },
-      }
-    }
+const alertMessage = ref("");
+const isLoading = ref(false);
+const todos = ref([]);
+const editTodoForm = reactive({
+  open: false,
+  todo: {
+    id: -1,
+    title: ""
   },
-  async created() {
-    this.isLoading = true;
-    setTimeout(() => {
-      todoApi.getTodos()
-        .then(todos => {
-          this.todos = todos;
-          this.isLoading = false;
-        })
-        .catch((e) => {
-          console.log(e);
-          this.alertMessage = "Error communicating with the server";
-          this.isLoading = false;
-        });
-    }, 4000);
-  },
-  methods: {
-    openEditForm(todo) {
-      this.editTodoForm.open = true;
-      this.editTodoForm.todo = { ...todo }
+});
+fetchTodos();
 
-    },
-    async updateTodo() {
-      if (this.editTodoForm.index === -1) return;
-      // trying to be immutable
-      const todoToUpdate = this.todos.find(todo => {
-        return todo.index === this.editTodoForm.todo.index
-      });
+function openEditForm(todo) {
+  editTodoForm.open = true;
+  editTodoForm.todo = { ...todo }
+};
 
-      if (!todoToUpdate) return;
-      todoToUpdate.title = this.editTodoForm.todo.title;
-      const updatedTodo = await todoApi.updateTodo(todoToUpdate);
-      if (!updatedTodo) return;
-      todoToUpdate.title = this.editTodoForm.todo.title;
-      this.editTodoForm.open = false;
+async function fetchTodos() {
+  isLoading.value = true;
+  todoApi.getTodos()
+    .then(res => {
+      todos.value = res;
+      isLoading.value = false;
+    })
+    .catch((e) => {
+      console.log(e);
+      alertMessage.value = "Error communicating with the server";
+      isLoading.value = false;
+    });
+};
 
-    },
-    async removeTodo(index) {
-      const removedTodo = await todoApi.deleteTodo(index);
-      if (!removedTodo) return;
-      this.todos = this.todos.filter((todo) => todo.index !== index);
-    },
-    async addTodo(title) {
-      if (title === "") {
-        this.alertMessage = "Please fill in the title."
-        return;
-      }
+async function updateTodo() {
+  if (editTodoForm.index === -1) return;
+  // trying to be immutable
+  const todoToUpdate = todos.value.find(todo => {
+    return todo.index === editTodoForm.todo.index
+  });
 
-      this.alertMessage = "";
-      const newTodo = await todoApi.addTodo({ title });
+  if (!todoToUpdate) return;
+  todoToUpdate.title = editTodoForm.todo.title;
+  const updatedTodo = await todoApi.updateTodo(todoToUpdate);
+  if (!updatedTodo) return;
+  todoToUpdate.title = editTodoForm.todo.title;
+  editTodoForm.open = false;
 
-      this.todos.push({
-        title,
-        index: newTodo.id
-      });
-    },
-  },
-}
+};
+async function removeTodo(index) {
+  const removedTodo = await todoApi.deleteTodo(index);
+  if (!removedTodo) return;
+  todos.value = todos.value.filter((todo) => todo.index !== index);
+};
+async function addTodo(title) {
+  if (title === "") {
+    alertMessage.value = "Please fill in the title."
+    return;
+  }
+
+  alertMessage.value = "";
+  const newTodo = await todoApi.addTodo({ title });
+
+  todos.value.push({
+    title,
+    index: newTodo.id
+  });
+};
+
 </script>
