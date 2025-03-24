@@ -22,17 +22,20 @@
   </Modal>
 </template>
 
-<script>
+<script setup>
 import Modal from "./Modal.vue";
 import Btn from "./Btn.vue";
 
+const emit = defineEmits(['close', 'submit', 'update:modelValue']);
+const props = defineProps({
+  modelValue: {
+    type: String,
+    required: true,
 
-
-export default {
-  components: {
-    Modal, Btn
   },
-  props: ['modelValue', 'show'],
-  emits: ['close', 'submit', 'update:modelValue']
-}
+  show: {
+    type: Boolean,
+    required: true,
+  }
+});
 </script>

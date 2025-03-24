@@ -1,3 +1,46 @@
+<script setup>
+import { onMounted, onBeforeUnmount, useTemplateRef } from 'vue';
+
+const emit = defineEmits(['close']);
+const props = defineProps({
+  open: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  id: {
+    required: true,
+    type: String,
+  },
+});
+
+// refs
+const modal = useTemplateRef("modal");
+
+const clickListener = (e) => {
+  if (e.target !== modal) return;
+  if (!props.open) return;
+
+  emit('close');
+};
+const escListener = (e) => {
+  if (e.key !== 'Escape') return;
+  if (!this.open) return;
+
+  emit('close');
+};
+
+onMounted(() => {
+  window.addEventListener('click', clickListener);
+  window.addEventListener('keydown', escListener);
+});
+onBeforeUnmount(() => {
+
+  window.removeEventListener('click', clickListener);
+  window.removeEventListener('keydown', escListener);
+})
+</script>
+
 <template>
   <input type="checkbox" :id="id" :checked="open" class="modal-toggle" />
   <div class="modal" role="dialog" ref="modal">
@@ -18,47 +61,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import Btn from './Btn.vue';
-
-export default {
-  components: { Btn },
-  emits: ['close'],
-  props: {
-    open: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
-    id: {
-      required: true,
-      type: String,
-    },
-  },
-  data() {
-    return {
-      clickListener: (e) => {
-        if (e.target !== this.$refs.modal) return;
-        if (!this.open) return;
-
-        this.$emit('close');
-      },
-      escListener: (e) => {
-        if (e.key !== 'Escape') return;
-        if (!this.open) return;
-
-        this.$emit('close');
-      }
-    };
-  },
-  mounted() {
-    window.addEventListener('click', this.clickListener);
-    window.addEventListener('keydown', this.escListener);
-  },
-  beforeUnmount() {
-    window.removeEventListener('click', this.clickListener);
-    window.removeEventListener('keydown', this.escListener);
-  }
-}
-</script>

@@ -6,15 +6,11 @@
     </div>
   </form>
 </template>
-<script>
+
+<script setup>
 import Btn from '@/components/Btn.vue';
+import { ref } from 'vue';
 
-export default {
-
-  components: { Btn },
-  data() {
-    return { todoTitle: '' }
-  },
-  emits: ['submit']
-}
+const emit = defineEmits(['submit']);
+const todoTitle = ref("");
 </script>

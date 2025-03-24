@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar bg-base-200 shadow-sm">
-    Ilia topuria
+    VueJS application
     <div class="flex-1">
       <div class="avatar">
         <div class="w-8">

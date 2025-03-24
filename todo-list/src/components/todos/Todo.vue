@@ -9,28 +9,25 @@
     </Btn>
   </div>
 </template>
-<script>
+
+<script setup>
 import Btn from '@/components/Btn.vue';
 import Pencil from '../icons/Pencil.vue';
 
-export default {
-  created() {
-    this.todo.index = this.todo.id;
-  },
-  components: { Btn, Pencil },
-  props: {
-    todo: {
-      title: {
-        type: String,
-        required: true,
-      },
-      index: {
-        type: String,
-        required: true
-      }
+const emit = defineEmits(['delete', 'edit']);
+const props = defineProps({
+  todo: {
+    title: {
+      type: String,
+      required: true,
+    },
+    index: {
+      type: String,
+      required: true
     }
-  },
-  emits: ['delete', 'edit']
+  }
 
-}
+});
+props.todo.index = props.todo.id;
+
 </script>

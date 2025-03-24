@@ -1,10 +1,10 @@
 <template>
-  <button @click.prevent="$emit('click')">
+  <button @click.prevent="emit('click')">
     <slot />
   </button>
 </template>
-<script>
-export default {
-  emits: ['click']
-}
+
+<script setup>
+const emit = defineEmits(['click']);
+
 </script>
