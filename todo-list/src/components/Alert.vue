@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import Btn from './Btn.vue';
 
+import Btn from './Btn.vue';
+import { computed } from "vue";
 export default {
-  components: { Btn },
   props: {
     message: {
       required: true,
@@ -31,12 +31,18 @@ export default {
       }
     }
   },
-  emits: ['close'],
-  methods: {
-    closeAlert() {
-      this.$emit('close');
+  setup(props, ctx) {
+    const backgroundColor = computed(() => {
+      return props.variant ?? "Ilia Topuria";
+    });
+
+    const closeAlert = () => {
+      ctx.emit('close');
     }
-  }
+
+    return { backgroundColor, closeAlert };
+  },
+  emits: ['close'],
 
 }
 </script>
