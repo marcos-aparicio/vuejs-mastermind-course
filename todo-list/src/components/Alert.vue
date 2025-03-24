@@ -1,23 +1,10 @@
-<template>
-  <div class="alert-error"></div>
-  <div class="alert-info"></div>
-  <div class="alert-success"></div>
-  <div class="alert-warning"></div>
-  <div v-if="message !== ''" role="alert"
-    :class="['absolute bottom-0 right-0 alert alert-soft m-2 flex justify-between', `alert-${type}`]">
-    <span class="text-lg">{{ message ?? 'Topuria' }}</span>
-    <Btn class="btn btn-xs btn-ghost btn-circle !text-xl" @click="closeAlert">
-      &times;
-    </Btn>
-  </div>
-</template>
-
-<script>
-
+<script setup>
 import Btn from './Btn.vue';
 import { computed } from "vue";
-export default {
-  props: {
+
+const emit = defineEmits(['close']);
+const props = defineProps(
+  {
     message: {
       required: true,
       type: String,
@@ -30,19 +17,29 @@ export default {
 
       }
     }
-  },
-  setup(props, ctx) {
-    const backgroundColor = computed(() => {
-      return props.variant ?? "Ilia Topuria";
-    });
+  }
+);
 
-    const closeAlert = () => {
-      ctx.emit('close');
-    }
+// i know this is not the same as the course (since i am using daisyui) but still serves the same purpose
+const variant = computed(() => {
+  return props.type ?? "error";
+});
 
-    return { backgroundColor, closeAlert };
-  },
-  emits: ['close'],
-
+const closeAlert = () => {
+  emit('close');
 }
+
 </script>
+<template>
+  <div class="alert-error"></div>
+  <div class="alert-info"></div>
+  <div class="alert-success"></div>
+  <div class="alert-warning"></div>
+  <div v-if="message !== ''" role="alert"
+    :class="['absolute bottom-0 right-0 alert alert-soft m-2 flex justify-between', `alert-${variant}`]">
+    <span class="text-lg">{{ message ?? 'Topuria' }}</span>
+    <Btn class="btn btn-xs btn-ghost btn-circle !text-xl" @click="closeAlert">
+      &times;
+    </Btn>
+  </div>
+</template>
