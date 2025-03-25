@@ -19,78 +19,71 @@
 </template>
 
 <script setup>
-import Navbar from "@/components/Navbar.vue";
-import Todo from "@/components/todos/Todo.vue"
-import Alert from "@/components/Alert.vue";
-import AddTodo from "@/components/todos/AddTodo.vue";
-import EditTodoForm from "@/components/EditTodoForm.vue";
-import { api as todoApi } from "./apis/todos";
-import { reactive, ref } from "vue";
+  import Navbar from "@/components/Navbar.vue";
+  import Todo from "@/components/todos/Todo.vue"
+  import Alert from "@/components/Alert.vue";
+  import AddTodo from "@/components/todos/AddTodo.vue";
+  import EditTodoForm from "@/components/EditTodoForm.vue";
+  import {api as todoApi} from "./apis/todos";
+  import {reactive, ref, watch} from "vue";
+  import {useFetch} from "@/composables/fetch";
 
-const alertMessage = ref("");
-const isLoading = ref(false);
-const todos = ref([]);
-const editTodoForm = reactive({
-  open: false,
-  todo: {
-    id: -1,
-    title: ""
-  },
-});
-fetchTodos();
+  const alertMessage = ref("");
+  const editTodoForm = reactive({
+    open: false,
+    todo: {
+      id: -1,
+      title: ""
+    },
+  });
 
-function openEditForm(todo) {
-  editTodoForm.open = true;
-  editTodoForm.todo = { ...todo }
-};
+  function openEditForm(todo) {
+    editTodoForm.open = true;
+    editTodoForm.todo = {...todo}
+  };
 
-async function fetchTodos() {
-  isLoading.value = true;
-  todoApi.getTodos()
-    .then(res => {
-      todos.value = res;
-      isLoading.value = false;
-    })
-    .catch((e) => {
-      console.log(e);
-      alertMessage.value = "Error communicating with the server";
-      isLoading.value = false;
+  const {data: todos, isLoading} = useFetch("/api/todos", {
+    onError: () => {
+      alertMessage.value = "Error fetching todos";
+    }
+  });
+
+
+
+
+  async function updateTodo() {
+    if (editTodoForm.index === -1) return;
+    // trying to be immutable
+    const todoToUpdate = todos.value.find(todo => {
+      return todo.index === editTodoForm.todo.index
     });
-};
 
-async function updateTodo() {
-  if (editTodoForm.index === -1) return;
-  // trying to be immutable
-  const todoToUpdate = todos.value.find(todo => {
-    return todo.index === editTodoForm.todo.index
-  });
+    if (!todoToUpdate) return;
+    todoToUpdate.title = editTodoForm.todo.title;
+    const updatedTodo = await todoApi.updateTodo(todoToUpdate);
+    if (!updatedTodo) return;
+    todoToUpdate.title = editTodoForm.todo.title;
+    editTodoForm.open = false;
 
-  if (!todoToUpdate) return;
-  todoToUpdate.title = editTodoForm.todo.title;
-  const updatedTodo = await todoApi.updateTodo(todoToUpdate);
-  if (!updatedTodo) return;
-  todoToUpdate.title = editTodoForm.todo.title;
-  editTodoForm.open = false;
+  };
+  async function removeTodo(index) {
+    const removedTodo = await todoApi.deleteTodo(index);
+    if (!removedTodo) return;
+    todos.value = todos.value.filter((todo) => todo.index !== index);
+  };
+  async function addTodo(title) {
+    if (title === "") {
+      alertMessage.value = "Please fill in the title."
+      return;
+    }
 
-};
-async function removeTodo(index) {
-  const removedTodo = await todoApi.deleteTodo(index);
-  if (!removedTodo) return;
-  todos.value = todos.value.filter((todo) => todo.index !== index);
-};
-async function addTodo(title) {
-  if (title === "") {
-    alertMessage.value = "Please fill in the title."
-    return;
-  }
+    alertMessage.value = "";
+    const newTodo = await todoApi.addTodo({title});
 
-  alertMessage.value = "";
-  const newTodo = await todoApi.addTodo({ title });
-
-  todos.value.push({
-    title,
-    index: newTodo.id
-  });
-};
+    todos.value.push({
+      title,
+      index: newTodo.id
+    });
+  };
 
 </script>
