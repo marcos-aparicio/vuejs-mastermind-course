@@ -13,34 +13,24 @@
 </template>
 
 <script setup>
-import Btn from './Btn.vue';
-import { computed } from "vue";
+  import {useBackgroundColor, useBackgroundColorProps} from '@/composables/backgroundColor';
+  import Btn from './Btn.vue';
 
-const emit = defineEmits(['close']);
-const props = defineProps(
-  {
-    message: {
-      required: true,
-      type: String,
-    },
-    type: {
-      default: "error",
-      type: String,
-      validator(input) {
-        return ["error", "success", "warning", "info"].includes(input);
-
-      }
+  const emit = defineEmits(['close']);
+  const props = defineProps(
+    {
+      message: {
+        required: true,
+        type: String,
+      },
+      ...useBackgroundColorProps
     }
+  );
+
+  // i know this is not the same as the course (since i am using daisyui) but still serves the same purpose
+  const variant = useBackgroundColor(props);
+  const closeAlert = () => {
+    emit('close');
   }
-);
-
-// i know this is not the same as the course (since i am using daisyui) but still serves the same purpose
-const variant = computed(() => {
-  return props.type ?? "error";
-});
-
-const closeAlert = () => {
-  emit('close');
-}
 
 </script>
