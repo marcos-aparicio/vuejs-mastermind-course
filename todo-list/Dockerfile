@@ -10,7 +10,8 @@ COPY . .
 
 RUN npm i -g @vue/cli &&\
     npm i
-CMD ["npm", "run", "dev"]
+
+CMD [ -d "node_modules" ] && npm run dev || npm ci && npm run dev
 
 FROM development as dev-envs
 RUN <<EOF
@@ -25,4 +26,4 @@ EOF
 
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
-CMD ["yarn", "run", "serve"]
+CMD ["npm", "run", "serve"]

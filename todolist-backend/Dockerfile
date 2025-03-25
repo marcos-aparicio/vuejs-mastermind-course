@@ -10,7 +10,8 @@ COPY . .
 
 RUN npm i
 ENV HOST=0.0.0.0
-CMD ["npm", "run", "server"]
+
+CMD [ -d "node_modules" ] && npm run server || npm ci && npm run server
 
 FROM development as dev-envs
 RUN <<EOF
@@ -25,4 +26,4 @@ EOF
 
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
-CMD ["yarn", "run", "serve"]
+CMD ["npm", "run", "serve"]
