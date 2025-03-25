@@ -1,7 +1,8 @@
-const URL = "/api";
+const API_BASE_URL = "/api";
+
 const api = {
   async addTodo(todo) {
-    const req = await fetch(`${URL}/todos`, {
+    const req = await fetch(`${API_BASE_URL}/todos`, {
       method: "POST",
       body: JSON.stringify(todo),
     });
@@ -9,7 +10,7 @@ const api = {
     return newTodo;
   },
   async deleteTodo(index) {
-    const req = await fetch(`${URL}/todos/${index}`, {
+    const req = await fetch(`${API_BASE_URL}/todos/${index}`, {
       method: "DELETE",
     });
     const newTodo = await req.json();
@@ -18,7 +19,7 @@ const api = {
   async updateTodo(todo) {
     const index = todo.index;
     const transformedTodo = { title: todo.title };
-    const req = await fetch(`${URL}/todos/${index}`, {
+    const req = await fetch(`${API_BASE_URL}/todos/${index}`, {
       method: "PUT",
       body: JSON.stringify(transformedTodo),
     });
@@ -26,7 +27,7 @@ const api = {
     return newTodo;
   },
   async getTodos() {
-    const req = await fetch(`${URL}/todos`);
+    const req = await fetch(`${API_BASE_URL}/todos`);
     const todos = await req.json();
     return todos;
   },

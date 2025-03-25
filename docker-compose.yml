@@ -1,0 +1,32 @@
+services:
+  front:
+    env_file:
+      - .env
+    environment:
+      BACKEND_URL: "http://back:${BACKEND_PORT}" # Overrides .env
+    build:
+      context: todo-list
+      target: development
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    volumes:
+      - ./todo-list:/project
+      - /project/node_modules/
+    networks:
+      - red
+  back:
+    env_file:
+      - .env
+    build:
+      context: todolist-backend
+      target: development
+    ports:
+      - "${BACKEND_PORT}:8080"
+    volumes:
+      - ./todolist-backend:/back
+      - /back/node_modules
+    networks:
+      - red
+networks:
+  red:
+    driver: bridge

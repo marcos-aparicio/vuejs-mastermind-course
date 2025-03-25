@@ -16,7 +16,10 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8080/",
+        target:
+          import.meta.env?.VITE_BACKEND_URL ??
+          process.env?.BACKEND_URL ??
+          "http://localhost:8080",
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },

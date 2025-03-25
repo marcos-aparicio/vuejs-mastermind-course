@@ -23,7 +23,7 @@
 <script setup>
 import Alert from "@/components/Alert.vue";
 import Btn from "@/components/Btn.vue";
-import { api as todoApi } from "@/apis/todos";
+import { api as todoApi } from "@/services/todos";
 import { useFetch } from "@/composables/fetch";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

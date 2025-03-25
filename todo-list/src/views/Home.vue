@@ -18,7 +18,7 @@
 import Todo from "@/components/todos/Todo.vue"
 import Alert from "@/components/Alert.vue";
 import AddTodo from "@/components/todos/AddTodo.vue";
-import { api as todoApi } from "@/apis/todos";
+import { api as todoApi } from "@/services/todos";
 import { ref } from "vue";
 import { useFetch } from "@/composables/fetch";
 
