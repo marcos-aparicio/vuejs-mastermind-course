@@ -3,10 +3,11 @@
   <div class="alert-success"></div>
   <div class="alert-warning"></div>
   <div class="alert-error"></div>
-  <div v-if="message" role="alert"
+
+  <div v-if="show" role="alert"
     :class="['absolute bottom-0 right-0 alert alert-soft m-2 flex justify-between', `alert-${variant}`]">
-    <span class="text-lg">{{ message ?? 'Topuria' }}</span>
-    <Btn class="btn btn-xs btn-ghost btn-circle !text-xl" @click="closeAlert">
+    <span class="text-lg">{{ message }}</span>
+    <Btn class="btn btn-xs btn-ghost btn-circle !text-xl" @click="emit('close')">
       &times;
     </Btn>
   </div>
@@ -20,8 +21,11 @@ const emit = defineEmits(['close']);
 const props = defineProps(
   {
     message: {
-      required: true,
       type: String,
+    },
+    show: {
+      type: Boolean,
+      default: false,
     },
     ...useBackgroundColorProps
   }
@@ -29,8 +33,4 @@ const props = defineProps(
 
 // i know this is not the same as the course (since i am using daisyui) but still serves the same purpose
 const variant = useBackgroundColor(props);
-const closeAlert = () => {
-  emit('close');
-}
-
 </script>

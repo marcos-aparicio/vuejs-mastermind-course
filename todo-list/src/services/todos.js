@@ -4,24 +4,22 @@ const api = {
   async addTodo(todo) {
     const req = await fetch(`${API_BASE_URL}/todos`, {
       method: "POST",
-      body: JSON.stringify(todo),
+      body: JSON.stringify({ ...todo, completed: false }),
     });
     const newTodo = await req.json();
     return newTodo;
   },
-  async deleteTodo(index) {
-    const req = await fetch(`${API_BASE_URL}/todos/${index}`, {
+  async deleteTodo(id) {
+    const req = await fetch(`${API_BASE_URL}/todos/${id}`, {
       method: "DELETE",
     });
     const newTodo = await req.json();
     return newTodo;
   },
-  async updateTodo(todo) {
-    const index = todo.index;
-    const transformedTodo = { title: todo.title };
-    const req = await fetch(`${API_BASE_URL}/todos/${index}`, {
+  async updateTodo(id, todo) {
+    const req = await fetch(`${API_BASE_URL}/todos/${id}`, {
       method: "PUT",
-      body: JSON.stringify(transformedTodo),
+      body: JSON.stringify(todo),
     });
     const newTodo = await req.json();
     return newTodo;

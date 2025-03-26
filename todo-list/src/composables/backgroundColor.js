@@ -2,11 +2,11 @@ import { computed } from "vue";
 
 function useBackgroundColor(props) {
   return computed(() => {
-    return props.type ?? "error";
+    return props.variant ?? "error";
   });
 }
 const useBackgroundColorProps = {
-  type: {
+  variant: {
     default: "error",
     type: String,
     validator(input) {
